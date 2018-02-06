@@ -17,6 +17,7 @@ titanic$Title <- case_when(
 titanic$Title <- factor(titanic$Title)
 
 #Extract familyname to match couples
+titanic$Name <- as.character(titanic$Name)
 titanic$FamilyName <- case_when(
   titanic$Title == "Mrs." ~ gsub("\\(.*", "", titanic$Name),
   titanic$Title == "Mr." ~ titanic$Name,
@@ -25,10 +26,8 @@ titanic$FamilyName <- case_when(
 titanic$FamilyName <- gsub("Mrs.","Mr.", titanic$FamilyName)
 titanic$FamilyName <- factor(gsub(" ", "", titanic$FamilyName, fixed = TRUE))
 occurences <- table(unlist(titanic$FamilyName))
-summary(occurences)
 titanic$FamilyNameCount <- occurences[titanic$FamilyName]
 rm(occurences)
-table(titanic$FamilyNameCount)
 titanic$TravelsWithPartner <- ifelse(titanic$FamilyNameCount == 2,1,0)
 titanic$TravelsWithPartner <- factor(titanic$TravelsWithPartner)
 drops <- c("FamilyName", "FamilyNameCount")
@@ -38,14 +37,15 @@ rm(drops)
 #Fill missing Ages with mean age
 titanic$Age[is.na(titanic$Age)] <- mean(titanic$Age, na.rm = TRUE)
 
-#Analyse Cabins
+#Missing Factor Level
+levels(titanic$Embarked)[1] = "missing"
 
 #Train Decision Tree
 library(C50)
 titanic$Survived <- factor(titanic$Survived)
 titanic$Pclass <- factor(titanic$Pclass)
-levels(titanic$Embarked)[1] = "missing"
-drops <- c("Ticket", "Cabin","Name")
+
+drops <- c("Ticket", "Name","Cabin")
 titanic <- titanic[, !(names(titanic) %in% drops)]
 rm(drops)
 summary(titanic)
