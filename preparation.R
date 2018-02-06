@@ -1,6 +1,7 @@
 #Load dataset
 setwd("~/Kaggle/Titanic/Machine-Learning-from-Disaster")
-titanic <- read.csv("./Data/train.csv")
+#titanic <- read.csv("./Data/train.csv")
+titanic <- read.csv("./Data/test.csv")
 summary(titanic)
 
 #Extract Title
@@ -50,20 +51,22 @@ titanic$CabinNumber <- gsub("A|B|C|D|E|F|G|T","", titanic$Cabin)
 titanic$CabinNumber <- as.numeric(titanic$CabinNumber)
 
 #Extract additional info from tickets
-titanic$TicketClass <- gsub(" |1|2|3|4|5|6|7|8|9|0|\\.|/","", titanic$Ticket)
-titanic$TicketClass <- factor(titanic$TicketClass)
-levels(titanic$TicketClass)[1] = "missing"
+#titanic$TicketClass <- gsub(" |1|2|3|4|5|6|7|8|9|0|\\.|/","", titanic$Ticket)
+#titanic$TicketClass <- sapply(substr(titanic$TicketClass,1,4), tolower)
+#titanic$TicketClass <- factor(titanic$TicketClass)
+#levels(titanic$TicketClass)[1] = "missing"
+#table(titanic$TicketClass)
 
 #Prepare for model
-titanic$Survived <- factor(titanic$Survived)
 titanic$Pclass <- factor(titanic$Pclass)
-drops <- c("Ticket", "Name","Cabin", "CabineNumber")
+drops <- c("Ticket", "Name","Cabin", "CabinNumber")
 titanic <- titanic[, !(names(titanic) %in% drops)]
 rm(drops)
 
-#Train Decision Tree
-library(C50)
-treeModel <- C5.0(titanic[, -c(1:2)], titanic$Survived, trials = 14, control = C5.0Control(noGlobalPruning = FALSE))
-summary(treeModel)
+#Save data
+#write.csv(titanic, file = "./Data/train_p.csv")
+write.csv(titanic, file = "./Data/test_p.csv")
+
+
 
 
