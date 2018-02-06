@@ -1,5 +1,6 @@
 #Load dataset
-titanic <- read.csv("./data/train.csv")
+setwd("~/Kaggle/Titanic/Machine-Learning-from-Disaster")
+titanic <- read.csv("./Data/train.csv")
 summary(titanic)
 
 #Extract Title
@@ -17,14 +18,35 @@ titanic$Title <- factor(titanic$Title)
 
 #Extract lastname
 titanic$Name <- as.character(titanic$Name)
-
-lastNames <- data.frame(t(matrix(
+LastNames <- data.frame(t(matrix(
   unlist(strsplit(as.vector(titanic$Name), split = ",")), 
   ncol = length(titanic$Name), nrow = 2)))
-titanic$lastname <- lastNames$X1
-#Count occurences of lastname
-occurences <- table(unlist(titanic$lastname))
-titanic$lastnameCount <- occurences[titanic$lastname]
+titanic$Lastname <- LastNames$X1
+#Count lastname
+occurences <- table(unlist(titanic$Lastname))
+titanic$LastnameCount <- occurences[titanic$Lastname]
+drops <- c("Lastname")
+titanic <- titanic[, !(names(titanic) %in% drops)]
+rm(occurences, LastNames, drops)
+
+#Extract familyname
+titanic$FamilyName <- case_when(
+  titanic$Title == "Mrs." ~ gsub("\\(.*", "", titanic$Name),
+  titanic$Title == "Mr." ~ titanic$Name,
+  TRUE ~ ""
+)
+titanic$FamilyName <- gsub("Mrs.","Mr.", titanic$FamilyName)
+titanic$FamilyName <- factor(gsub(" ", "", titanic$FamilyName, fixed = TRUE))
+#Count familyname
+occurences <- table(unlist(titanic$FamilyName))
+summary(occurences)
+titanic$FamilyNameCount <- occurences[titanic$FamilyName]
+rm(occurences)
+table(titanic$FamilyNameCount)
+titanic$TravelsWithPartner <- ifelse(titanic$FamilyNameCount == 2,1,0)
+drops <- c("FamilyName", "FamilyNameCount")
+titanic <- titanic[, !(names(titanic) %in% drops)]
+rm(drops)
 
 #Analyse missing age values
 hist(titanic$Age)
