@@ -10,6 +10,6 @@ summary(treeModel)
 test <- read.csv("./Data/test_p.csv")
 pred <- predict(treeModel, test[,-c(1:2)])
 
-result <- data.frame(PassengerId=test$PassengerId, Survived=titanic_pred) 
-write.csv(result,file = "./Data/prediction.csv")
+result <- data.frame(PassengerId=test$PassengerId, Survived=pred) 
+write.csv(result[,-1],file = "./Data/prediction.csv")
             
