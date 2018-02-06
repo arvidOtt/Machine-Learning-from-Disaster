@@ -51,11 +51,11 @@ titanic$CabinNumber <- gsub("A|B|C|D|E|F|G|T","", titanic$Cabin)
 titanic$CabinNumber <- as.numeric(titanic$CabinNumber)
 
 #Extract additional info from tickets
-#titanic$TicketClass <- gsub(" |1|2|3|4|5|6|7|8|9|0|\\.|/","", titanic$Ticket)
-#titanic$TicketClass <- sapply(substr(titanic$TicketClass,1,4), tolower)
-#titanic$TicketClass <- factor(titanic$TicketClass)
-#levels(titanic$TicketClass)[1] = "missing"
-#table(titanic$TicketClass)
+titanic$TicketClass <- gsub(" |1|2|3|4|5|6|7|8|9|0|\\.|/","", titanic$Ticket)
+titanic$TicketClass <- sapply(substr(titanic$TicketClass,1,4), tolower)
+titanic$TicketClass <- factor(titanic$TicketClass)
+levels(titanic$TicketClass)[1] = "missing"
+table(titanic$TicketClass)
 
 #Prepare for model
 titanic$Pclass <- factor(titanic$Pclass)
