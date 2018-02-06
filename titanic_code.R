@@ -40,14 +40,28 @@ titanic$Age[is.na(titanic$Age)] <- mean(titanic$Age, na.rm = TRUE)
 #Missing Factor Level
 levels(titanic$Embarked)[1] = "missing"
 
+#Extract additional info from cabin
+titanic$CabinLetter <- substr(titanic$Cabin,1,1)
+titanic$CabinLetter <- factor(titanic$CabinLetter)
+levels(titanic$CabinLetter)[1] = "missing"
+levels(titanic$CabinLetter)
+
+titanic$CabinNumber <- gsub("A|B|C|D|E|F|G|T","", titanic$Cabin)
+titanic$CabinNumber <- as.numeric(titanic$CabinNumber)
+
+#Extract additional info from tickets
+titanic$TicketClass <- gsub(" |1|2|3|4|5|6|7|8|9|0|\\.|/","", titanic$Ticket)
+titanic$TicketClass <- factor(titanic$TicketClass)
+levels(titanic$TicketClass)[1] = "missing"
+
 #Train Decision Tree
 library(C50)
 titanic$Survived <- factor(titanic$Survived)
 titanic$Pclass <- factor(titanic$Pclass)
-
-drops <- c("Ticket", "Name","Cabin")
+drops <- c("Ticket", "Name","Cabin", "CabineNumber")
 titanic <- titanic[, !(names(titanic) %in% drops)]
 rm(drops)
 summary(titanic)
-treeModel <- C5.0(titanic[, -2], titanic$Survived)
+?C5.0
+treeModel <- C5.0(titanic[, -2], titanic$Survived, trials = 10, control = C5.0Control(noGlobalPruning = TRUE))
 summary(treeModel)
