@@ -54,14 +54,16 @@ titanic$TicketClass <- gsub(" |1|2|3|4|5|6|7|8|9|0|\\.|/","", titanic$Ticket)
 titanic$TicketClass <- factor(titanic$TicketClass)
 levels(titanic$TicketClass)[1] = "missing"
 
-#Train Decision Tree
-library(C50)
+#Prepare for model
 titanic$Survived <- factor(titanic$Survived)
 titanic$Pclass <- factor(titanic$Pclass)
 drops <- c("Ticket", "Name","Cabin", "CabineNumber")
 titanic <- titanic[, !(names(titanic) %in% drops)]
 rm(drops)
-summary(titanic)
-?C5.0
-treeModel <- C5.0(titanic[, -2], titanic$Survived, trials = 10, control = C5.0Control(noGlobalPruning = TRUE))
+
+#Train Decision Tree
+library(C50)
+treeModel <- C5.0(titanic[, -c(1:2)], titanic$Survived, trials = 14, control = C5.0Control(noGlobalPruning = FALSE))
 summary(treeModel)
+
+
