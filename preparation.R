@@ -47,9 +47,9 @@ titanic$Age[is.na(titanic$Age)] <- mean(titanic$Age, na.rm = TRUE)
 #titanic$CabinNumber <- as.numeric(titanic$CabinNumber)
 
 #Extract additional info from tickets
-#titanic$TicketClass <- gsub(" |1|2|3|4|5|6|7|8|9|0|\\.|/","", titanic$Ticket)
-#titanic$TicketClass <- sapply(substr(titanic$TicketClass,1,4), tolower)
-#titanic$TicketClass <- factor(titanic$TicketClass)
+titanic$TicketClass <- gsub('\\D+','', titanic$Ticket)
+titanic$TicketClass <- substr(titanic$TicketClass,1,1)
+titanic$TicketClass <- gsub('4|5|6|7|8|9','4', titanic$TicketClass)
 
 #Missing Factor Levels
 levels(titanic$Cabin)[1] = "missing"
